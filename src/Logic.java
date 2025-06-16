@@ -86,7 +86,7 @@ public class Logic {
     }
     
     private void gameLoop() {
-    gameEnded = false; // Reset this flag when starting a new game
+    gameEnded = false; // Reset this when starting a new game
     while (gameEnded == false) {
         Player currentPlayer = players[currentPlayerIndex];
         if (currentPlayer.hasRetired()) {
@@ -98,7 +98,7 @@ public class Logic {
         
         // Check if player chose to exit to main menu
         if (gameEnded) {
-            return; // Exit the game loop immediately
+            return; // Exit the game loop
         }
         
         boolean allRetired = true;
@@ -116,19 +116,22 @@ public class Logic {
         }
     }
     
-    // Only show end game if all players retired naturally
+
     if (checkAllPlayersRetired()) {
         endGame();
     }
 }
 
 private boolean checkAllPlayersRetired() {
+    boolean allRetired;
     for (int i = 0; i < players.length; i++) {
         if (players[i].hasRetired() == false) {
-            return false;
+            allRetired = false;
+            return allRetired;
         }
     }
-    return true;
+    allRetired = true;
+    return  allRetired;
 }
     
 private void playPlayerTurn(Player player) {

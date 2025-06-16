@@ -64,6 +64,10 @@ public class GameBoard {
     }
 
     public Tile[] getAllTiles() {
-        return Arrays.copyOf(tiles, tiles.length);
+        Tile[] copy = new Tile[tiles.length];
+        for (int i = 0; i < tiles.length; i++) {
+            copy[i] = tiles[i];
+        }
+        return copy;
     }
 }
