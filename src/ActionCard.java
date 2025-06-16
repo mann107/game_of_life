@@ -21,11 +21,21 @@ public class ActionCard {
         this.affectsAllPlayers = affectsAllPlayers;
     }
     
-    public String getTitle() { return title; }
-    public String getDescription() { return description; }
-    public int getMoneyEffect() { return moneyEffect; }
-    public boolean isGroupSpin() { return isGroupSpin; }
-    public boolean affectsAllPlayers() { return affectsAllPlayers; }
+    public String getTitle() { 
+        return title; 
+    }
+    public String getDescription() { 
+        return description; 
+    }
+    public int getMoneyEffect() { 
+        return moneyEffect; 
+    }
+    public boolean isGroupSpin() { 
+        return isGroupSpin; 
+    }
+    public boolean affectsAllPlayers() { 
+        return affectsAllPlayers; 
+}
     
     public String toString() {
         return title + ": " + description;

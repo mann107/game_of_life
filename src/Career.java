@@ -24,8 +24,11 @@ public class Career {
     public String getSpecialRule() { return specialRule; }
     
     public String toString() {
-        return name + " ($" + salary + ")" + 
-               (requiresDegree ? " [Degree Required]" : "");
+        String result = name + " ($" + salary + ")";
+        if (requiresDegree) {
+            result += " [Degree Required]";
+        }
+        return result;
     }
     
     public static Career[] createNonDegreeCareers() {

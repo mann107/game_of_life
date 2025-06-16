@@ -4,7 +4,7 @@ public class GameBoard {
     private Tile[] tiles;
     private static final int TOTAL_TILES = 200;
     private static final int COLLEGE_PATH_LENGTH = 20;
-    private static final int MERGE_POINT = 25;
+    private static final int MERGE_POINT = 0;
 
     public GameBoard() {
         this.tiles = new Tile[TOTAL_TILES];
@@ -20,16 +20,16 @@ public class GameBoard {
 
         int currentPos = MERGE_POINT;
 
-        tiles[currentPos++] = new Tile("MARRIAGE", "Get Married!", currentPos - 1);
+        tiles[45] = new Tile("MARRIAGE", "Get Married!",  44);
 
         while (currentPos < TOTAL_TILES - 1) {
-            if (currentPos % 15 == 0) {
+            if (currentPos % 7 == 0) {
                 tiles[currentPos] = new Tile("PAYDAY", "PayDay - Collect Salary", currentPos);
-            } else if (currentPos % 23 == 0) {
+            } else if (currentPos % 31 == 0) {
                 tiles[currentPos] = new Tile("BABY", "Baby! Add a Child", currentPos);
-            } else if (currentPos % 35 == 0) {
+            } else if (currentPos % 29 == 0) {
                 tiles[currentPos] = new Tile("HOUSE", "House for Sale", currentPos);
-            } else if (currentPos % 47 == 0) {
+            } else if (currentPos % 61 == 0) {
                 tiles[currentPos] = new Tile("BABY", "Twins! Add 2 Children", currentPos);
             } else {
                 tiles[currentPos] = new Tile("ACTION", "Draw Action Card", currentPos);
