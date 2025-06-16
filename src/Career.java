@@ -1,7 +1,3 @@
-/**
- * Represents a career card in the Game of Life
- * Contains career information including name, salary, and degree requirement
- */
 public class Career {
     private String name;
     private int salary;
@@ -22,7 +18,6 @@ public class Career {
         this.specialRule = specialRule;
     }
     
-    // Getters
     public String getName() { return name; }
     public int getSalary() { return salary; }
     public boolean requiresDegree() { return requiresDegree; }
@@ -33,7 +28,6 @@ public class Career {
                (requiresDegree ? " [Degree Required]" : "");
     }
     
-    // Static method to create career arrays
     public static Career[] createNonDegreeCareers() {
         return new Career[] {
             new Career("Salesperson", 30000, false),

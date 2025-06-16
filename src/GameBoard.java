@@ -1,9 +1,5 @@
 import java.util.Arrays;
 
-/**
- * Represents the game board with all tiles
- * Manages board creation and tile placement
- */
 public class GameBoard {
     private Tile[] tiles;
     private static final int TOTAL_TILES = 200;
@@ -16,23 +12,16 @@ public class GameBoard {
     }
 
     private void createBoard() {
-        // Starting tile
         tiles[0] = new Tile("CAREER_CHOICE", "Choose Career Path or College Path", 0);
 
-        // Career path tiles (positions 1-4)
         for (int i = 1; i <= 4; i++) {
             tiles[i] = new Tile("EMPTY", "Career Path", i);
         }
 
-        // College path tiles (positions 5-24, not used in this array, handled separately in game logic)
-
-        // Main board starts at position 25 (merge point)
         int currentPos = MERGE_POINT;
 
-        // Add marriage tile early
         tiles[currentPos++] = new Tile("MARRIAGE", "Get Married!", currentPos - 1);
 
-        // Create main board with mostly action tiles as requested
         while (currentPos < TOTAL_TILES - 1) {
             if (currentPos % 15 == 0) {
                 tiles[currentPos] = new Tile("PAYDAY", "PayDay - Collect Salary", currentPos);
@@ -43,13 +32,11 @@ public class GameBoard {
             } else if (currentPos % 47 == 0) {
                 tiles[currentPos] = new Tile("BABY", "Twins! Add 2 Children", currentPos);
             } else {
-                // Most tiles are action tiles as requested
                 tiles[currentPos] = new Tile("ACTION", "Draw Action Card", currentPos);
             }
             currentPos++;
         }
 
-        // Final tile - retirement
         tiles[TOTAL_TILES - 1] = new Tile("RETIREMENT", "Retirement - Game Over!", TOTAL_TILES - 1);
     }
 

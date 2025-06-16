@@ -1,5 +1,7 @@
 import java.util.Random;
 
+
+//we found how to use the Random class in Java to generate random numbers online as well
 public class Wheel {
     private Random random;
     

@@ -1,7 +1,3 @@
-/**
- * Represents an action card in the Game of Life
- * Contains the card's title, description, and monetary effect
- */
 public class ActionCard {
     private String title;
     private String description;
@@ -25,7 +21,6 @@ public class ActionCard {
         this.affectsAllPlayers = affectsAllPlayers;
     }
     
-    // Getters
     public String getTitle() { return title; }
     public String getDescription() { return description; }
     public int getMoneyEffect() { return moneyEffect; }
@@ -36,7 +31,6 @@ public class ActionCard {
         return title + ": " + description;
     }
     
-    // Static method to create action card deck
     public static ActionCard[] createActionCards() {
         return new ActionCard[] {
             new ActionCard("Birthday Gift", "Receive $10,000 from the bank", 10000),

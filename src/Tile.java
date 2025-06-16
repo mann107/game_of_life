@@ -1,6 +1,4 @@
-
 public class Tile {
-    // Tile type constants
     public static final String EMPTY = "EMPTY";
     public static final String PAYDAY = "PAYDAY";
     public static final String MARRIAGE = "MARRIAGE";
@@ -21,7 +19,6 @@ public class Tile {
         this.position = position;
     }
 
-    // Getters
     public String getType() { return type; }
     public String getDescription() { return description; }
     public int getPosition() { return position; }

@@ -4,10 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Main game engine that orchestrates the Game of Life
- * Handles game flow, player turns, and game state management
- */
 public class Logic {
     private Player[] players;
     private GameBoard board;
@@ -35,128 +31,168 @@ public class Logic {
     }
     
     public void startGame() {
-        slowPrint("Welcome to the Game of Life!");
-        slowPrint("In this game, you'll navigate through life's journey...");
+    slowPrint("=================================");
+    slowPrint("   WELCOME TO THE GAME OF LIFE   ");
+    slowPrint("=================================");
+    
+    boolean shouldExit = false;
+    while (shouldExit == false) {
+        clearScreen();
+        slowPrint("Main Menu:");
+        slowPrint("1. New Game");
+        slowPrint("2. Load Game");
+        slowPrint("3. Exit");
+        slowPrint("Choose an option (1-3): ");
         
-        setupPlayers();
+        int choice = getIntInput(1, 3);
         
-        slowPrint("\nLet the game begin!");
-        pressEnterToContinue();
-        
-        gameLoop();
-        
-        endGame();
+        if (choice == 1) {
+            setupPlayers();
+            slowPrint("\nLet the game begin!");
+            pressEnterToContinue();
+            gameLoop();
+            endGame();
+            shouldExit = true;
+        } else if (choice == 2) {
+            loadGame();
+            if (players.length > 0) {
+                gameLoop();
+                endGame();
+                shouldExit = true;
+            }
+        } else if (choice == 3) {
+            slowPrint("Thanks for playing! Goodbye!");
+            shouldExit = true;
+        }
     }
+}
     
     private void setupPlayers() {
         slowPrint("\nHow many players will be playing? (2-4): ");
         int numPlayers = getIntInput(2, 4);
-        
         players = new Player[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
             slowPrint("Enter name for Player " + (i + 1) + ": ");
-            String name = scanner.nextLine().trim();
-            if (name.isEmpty()) {
+            String name = scanner.nextLine();
+            if (name.length() == 0) {
                 name = "Player " + (i + 1);
             }
             players[i] = new Player(name);
         }
-        
         slowPrint("\nPlayers created:");
-        for (Player player : players) {
-            slowPrint("- " + player.getName());
+        for (int i = 0; i < players.length; i++) {
+            slowPrint("- " + players[i].getName());
         }
     }
     
     private void gameLoop() {
-        while (!gameEnded) {
-            Player currentPlayer = players[currentPlayerIndex];
-            
-            if (currentPlayer.hasRetired()) {
-                nextPlayer();
-                continue;
+    gameEnded = false; // Reset this flag when starting a new game
+    while (gameEnded == false) {
+        Player currentPlayer = players[currentPlayerIndex];
+        if (currentPlayer.hasRetired()) {
+            nextPlayer();
+            continue;
+        }
+        clearScreen();
+        playPlayerTurn(currentPlayer);
+        
+        // Check if player chose to exit to main menu
+        if (gameEnded) {
+            return; // Exit the game loop immediately
+        }
+        
+        boolean allRetired = true;
+        for (int i = 0; i < players.length; i++) {
+            if (players[i].hasRetired() == false) {
+                allRetired = false;
+                break;
             }
-            
-            clearScreen();
-            playPlayerTurn(currentPlayer);
-            
-            // Check if all players have retired
-            boolean allRetired = true;
-            for (Player player : players) {
-                if (!player.hasRetired()) {
-                    allRetired = false;
-                    break;
-                }
-            }
-            
-            if (allRetired) {
-                gameEnded = true;
-            } else {
-                nextPlayer();
-            }
+        }
+        
+        if (allRetired) {
+            gameEnded = true;
+        } else {
+            nextPlayer();
         }
     }
     
-    private void playPlayerTurn(Player player) {
-        slowPrint("=== " + player.getName() + "'s Turn ===");
-        showProgress(player);
-        
+    // Only show end game if all players retired naturally
+    if (checkAllPlayersRetired()) {
+        endGame();
+    }
+}
+
+private boolean checkAllPlayersRetired() {
+    for (int i = 0; i < players.length; i++) {
+        if (players[i].hasRetired() == false) {
+            return false;
+        }
+    }
+    return true;
+}
+    
+private void playPlayerTurn(Player player) {
+    slowPrint("=== " + player.getName() + "'s Turn ===");
+    showProgress(player);
+    
+    slowPrint("\nOptions:");
+    slowPrint("1. Spin the wheel");
+    slowPrint("2. View detailed stats");
+    slowPrint("3. Save game");
+    slowPrint("4. Exit to main menu");
+    slowPrint("Choose an option (1-4): ");
+    
+    int choice = getIntInput(1, 4);
+    
+    if (choice == 1) {
         slowPrint("\nPress ENTER to spin the wheel...");
         scanner.nextLine();
-        
         int spinResult = wheel.spin();
         boolean isRed = wheel.isRed(spinResult);
         String color = wheel.getColor(spinResult);
-        
         slowPrint("You spun a " + spinResult + " (" + color + ")!");
-        
-        // Handle initial career/college choice
         if (player.getPosition() == 0) {
             handleInitialChoice(player, spinResult);
         } else {
-            // Normal movement
             player.moveForward(spinResult);
             handleTileEffect(player);
         }
-        
         slowPrint("\nCurrent Stats:");
         player.displayStats();
-        
-        slowPrint("\nPress 'S' to view detailed stats, or ENTER to continue...");
-        String input = scanner.nextLine().trim().toUpperCase();
-        if (input.equals("S")) {
-            showDetailedStats(player);
-        }
+        pressEnterToContinue();
+    } else if (choice == 2) {
+        showDetailedStats(player);
+    } else if (choice == 3) {
+        saveGame();
+    } else if (choice == 4) {
+        slowPrint("\nReturning to main menu...");
+        pressEnterToContinue();
+        gameEnded = true; // This will exit the game loop
     }
+}
     
     private void handleInitialChoice(Player player, int spinResult) {
         slowPrint("\nChoose your path:");
         slowPrint("1. Career Path (start working immediately)");
         slowPrint("2. College Path (20 spaces, then get degree career)");
-        
         int choice = getIntInput(1, 2);
-        
         if (choice == 1) {
-            // Career path
             slowPrint("You chose the Career Path!");
             Career career = getRandomCareer(nonDegreeCareers);
             player.setCareer(career);
             slowPrint("You got the career: " + career);
-            player.setPosition(5); // Start after career choice
+            player.setPosition(5);
         } else {
-            // College path
             slowPrint("You chose College! You'll need to complete 20 spaces first.");
             slowPrint("You take out a $50,000 student loan.");
             player.takeLoan(50000);
-            player.setPosition(-20); // Negative to represent college path
+            player.setPosition(-20);
         }
-        
         player.moveForward(spinResult);
         handleTileEffect(player);
     }
     
     private void handleTileEffect(Player player) {
-        // Handle college path completion
         if (player.getPosition() >= 0 && player.getCareer() == null) {
             slowPrint("Congratulations! You graduated from college!");
             Career career = getRandomCareer(degreeCareers);
@@ -165,22 +201,16 @@ public class Logic {
             player.setPosition(board.getMergePoint());
             return;
         }
-
-        // Handle negative positions (still in college)
         if (player.getPosition() < 0) {
             slowPrint("You're still in college... " + Math.abs(player.getPosition()) + " spaces to go!");
             return;
         }
-
-        // If position is before merge point and no career, move to merge point
         if (player.getPosition() < board.getMergePoint() && player.getCareer() != null) {
             player.setPosition(board.getMergePoint());
         }
-
         Tile currentTile = board.getTile(player.getPosition());
         if (currentTile != null) {
             slowPrint("You landed on: " + currentTile.getDescription());
-
             String type = currentTile.getType().toString();
             if (type.equals("PAYDAY")) {
                 handlePayDay(player);
@@ -195,14 +225,13 @@ public class Logic {
             } else if (type.equals("RETIREMENT")) {
                 handleRetirement(player);
             }
-            // else: Empty tile, no effect
         }
     }
     
     private void handlePayDay(Player player) {
         if (player.getCareer() != null) {
             player.receiveSalary();
-            slowPrint("You received your salary of $" + String.format("%,d", player.getCareer().getSalary()) + "!");
+            slowPrint("You received your salary of $" + player.getCareer().getSalary() + "!");
         } else {
             slowPrint("You don't have a career yet, so no salary!");
         }
@@ -229,7 +258,6 @@ public class Logic {
             player.addChild();
             slowPrint("Congratulations! You had a baby!");
         }
-        
         if (player.isMarried()) {
             slowPrint("Other players give you gifts! You receive $5,000!");
             player.addMoney(5000);
@@ -240,17 +268,15 @@ public class Logic {
         slowPrint("A house is for sale!");
         House house = getRandomHouse();
         slowPrint("Available: " + house);
-        
         slowPrint("Do you want to buy this house? (Y/N): ");
-        String choice = scanner.nextLine().trim().toUpperCase();
-        
+        String choice = scanner.nextLine().toUpperCase();
         if (choice.equals("Y")) {
             if (player.getMoney() >= house.getBuyPrice()) {
                 player.buyHouse(house);
                 slowPrint("You bought the " + house.getName() + "!");
             } else {
                 slowPrint("You don't have enough money! You need $" + 
-                         String.format("%,d", house.getBuyPrice() - player.getMoney()) + " more.");
+                        (house.getBuyPrice() - player.getMoney()) + " more.");
             }
         } else {
             slowPrint("You decided not to buy the house.");
@@ -259,93 +285,79 @@ public class Logic {
     
     private void handleActionCard(Player player) {
         if (actionCardDeck.length == 0) {
-            // Reshuffle deck
             actionCardDeck = ActionCard.createActionCards();
             shuffleActionCardDeck();
         }
-        
         slowPrint("Press ENTER to draw an action card...");
         scanner.nextLine();
-        
         ActionCard card = actionCardDeck[0];
         actionCardDeck = Arrays.copyOfRange(actionCardDeck, 1, actionCardDeck.length);
         slowPrint("You drew: " + card);
-        
         if (card.isGroupSpin()) {
             handleGroupSpinCard(player);
         } else if (card.affectsAllPlayers()) {
             handleAllPlayersCard(player, card);
         } else {
-            // Regular money effect
             if (card.getMoneyEffect() > 0) {
                 player.addMoney(card.getMoneyEffect());
-                slowPrint("You gained $" + String.format("%,d", card.getMoneyEffect()) + "!");
+                slowPrint("You gained $" + card.getMoneyEffect() + "!");
             } else if (card.getMoneyEffect() < 0) {
                 int amount = Math.abs(card.getMoneyEffect());
                 if (player.subtractMoney(amount)) {
-                    slowPrint("You paid $" + String.format("%,d", amount) + "!");
+                    slowPrint("You paid $" + amount + "!");
                 } else {
                     slowPrint("You don't have enough money! You only pay $" + 
-                             String.format("%,d", player.getMoney()) + "!");
+                            player.getMoney() + "!");
                     player.subtractMoney(player.getMoney());
                 }
             }
         }
-        
-        // Add card to player's collection for retirement
         player.addActionCard(card);
     }
     
     private void handleGroupSpinCard(Player player) {
         slowPrint("Group Spin! All players will spin, highest number wins!");
-        
         int highestSpin = 0;
         Player winner = null;
-        
         for (Player p : players) {
             slowPrint(p.getName() + " spins...");
             pressEnterToContinue();
             int spin = wheel.spin();
             slowPrint(p.getName() + " spun a " + spin + "!");
-            
             if (spin > highestSpin) {
                 highestSpin = spin;
                 winner = p;
             }
         }
-        
         if (winner != null) {
             int winnings = highestSpin * 10000;
             winner.addMoney(winnings);
-            slowPrint(winner.getName() + " wins $" + String.format("%,d", winnings) + "!");
+            slowPrint(winner.getName() + " wins $" + winnings + "!");
         }
     }
     
     private void handleAllPlayersCard(Player player, ActionCard card) {
         int amount = Math.abs(card.getMoneyEffect());
-        
         if (card.getMoneyEffect() > 0) {
-            // Collect from all other players
             for (Player other : players) {
                 if (other != player) {
                     if (other.subtractMoney(amount)) {
                         player.addMoney(amount);
-                        slowPrint(other.getName() + " pays you $" + String.format("%,d", amount) + "!");
+                        slowPrint(other.getName() + " pays you $" + amount + "!");
                     } else {
                         int available = other.getMoney();
                         other.subtractMoney(available);
                         player.addMoney(available);
-                        slowPrint(other.getName() + " only has $" + String.format("%,d", available) + " to pay!");
+                        slowPrint(other.getName() + " only has $" + available + " to pay!");
                     }
                 }
             }
         } else {
-            // Pay all other players
             for (Player other : players) {
                 if (other != player) {
                     if (player.subtractMoney(amount)) {
                         other.addMoney(amount);
-                        slowPrint("You pay " + other.getName() + " $" + String.format("%,d", amount) + "!");
+                        slowPrint("You pay " + other.getName() + " $" + amount + "!");
                     } else {
                         slowPrint("You don't have enough money to pay everyone!");
                         break;
@@ -358,37 +370,37 @@ public class Logic {
     private void handleRetirement(Player player) {
         slowPrint(player.getName() + " has reached retirement!");
         player.setRetired(true);
-        
         slowPrint("Time for final calculations...");
         slowPrint("Press ENTER to spin for house selling prices...");
         scanner.nextLine();
-        
         int finalSpin = wheel.spin();
         boolean finalIsRed = wheel.isRed(finalSpin);
         String color = wheel.getColor(finalSpin);
-        
         slowPrint("Final spin: " + finalSpin + " (" + color + ")");
-        
         int finalMoney = player.calculateFinalMoney(finalIsRed);
-        
         slowPrint("\nFinal Calculation for " + player.getName() + ":");
-        slowPrint("Starting money: $" + String.format("%,d", player.getMoney()));
+        slowPrint("Starting money: $" + player.getMoney());
         slowPrint("Houses sold (" + color + " prices): $" + 
-                 String.format("%,d", calculateHouseSellValue(player, finalIsRed)));
+                 calculateHouseSellValue(player, finalIsRed));
         slowPrint("Action cards (" + player.getActionCards().length + " × $10,000): $" + 
-                 String.format("%,d", player.getActionCards().length * 10000));
+                 player.getActionCards().length * 10000);
         slowPrint("Children (" + player.getChildren() + " × $10,000): $" + 
-                 String.format("%,d", player.getChildren() * 10000));
-        slowPrint("Loans paid off: -$" + String.format("%,d", player.getLoanAmount()));
-        slowPrint("FINAL TOTAL: $" + String.format("%,d", finalMoney));
-        
+                 player.getChildren() * 10000);
+        slowPrint("Loans paid off: -$" + player.getLoanAmount());
+        slowPrint("FINAL TOTAL: $" + finalMoney);
         pressEnterToContinue();
     }
     
     private int calculateHouseSellValue(Player player, boolean isRed) {
         int total = 0;
-        for (House house : player.getHouses()) {
-            total += isRed ? house.getSellPriceRed() : house.getSellPriceBlack();
+        House[] houses = player.getHouses();
+        for (int i = 0; i < houses.length; i++) {
+            House house = houses[i];
+            if (isRed) {
+                total += house.getSellPriceRed();
+            } else {
+                total += house.getSellPriceBlack();
+            }
         }
         return total;
     }
@@ -397,10 +409,7 @@ public class Logic {
         clearScreen();
         slowPrint("=== GAME OVER ===");
         slowPrint("Final Results:");
-        
-        // Calculate final scores for all players and sort descending
         Player[] sortedPlayers = Arrays.copyOf(players, players.length);
-        // Simple bubble sort for clarity
         for (int i = 0; i < sortedPlayers.length - 1; i++) {
             for (int j = 0; j < sortedPlayers.length - i - 1; j++) {
             int scoreA = sortedPlayers[j].getMoney() + sortedPlayers[j].getActionCards().length * 10000 + sortedPlayers[j].getChildren() * 10000;
@@ -412,26 +421,23 @@ public class Logic {
             }
             }
         }
-        
         for (int i = 0; i < sortedPlayers.length; i++) {
             Player player = sortedPlayers[i];
             slowPrint((i + 1) + ". " + player.getName() + " - Final estimated value: $" + 
-                     String.format("%,d", player.getMoney() + (player.getActionCards().length * 10000) + 
+                     (player.getMoney() + (player.getActionCards().length * 10000) + 
                                                              (player.getChildren() * 10000)));
         }
-        
         slowPrint("\n🎉 " + sortedPlayers[0].getName() + " WINS! 🎉");
         slowPrint("\nThank you for playing the Game of Life!");
     }
     
-    // Helper methods
     private void nextPlayer() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
     }
     
     private void showProgress(Player player) {
         double progress = board.getProgressPercentage(player.getPosition());
-        slowPrint("Board Progress: " + String.format("%.1f", progress) + "% complete");
+        slowPrint("Board Progress: " + progress + "% complete");
         slowPrint("Position: " + player.getPosition() + " / " + board.getTotalTiles());
     }
     
@@ -453,10 +459,12 @@ public class Logic {
         return availableHouses[(int) (Math.random() * availableHouses.length)];
     }
     
+    //got this code from online, it is not my own
+    // but it is a simple way to print text slowly to simulate typing
     private void slowPrint(String text) {
         System.out.println(text);
         try {
-            Thread.sleep(100); // Small delay for immersive effect
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -468,7 +476,6 @@ public class Logic {
     }
     
     private void clearScreen() {
-        // Clear screen by printing newlines
         for (int i = 0; i < 3; i++) {
             System.out.println();
         }
@@ -478,15 +485,12 @@ public class Logic {
     private int getIntInput(int min, int max) {
         int input = -1;
         while (input < min || input > max) {
-            try {
+            
                 String line = scanner.nextLine();
-                input = Integer.parseInt(line.trim());
+                input = Integer.parseInt(line);
                 if (input < min || input > max) {
                     slowPrint("Please enter a number between " + min + " and " + max + ":");
                 }
-            } catch (NumberFormatException e) {
-                slowPrint("Please enter a valid number:");
-            }
         }
         return input;
     }
@@ -499,4 +503,158 @@ public class Logic {
             actionCardDeck[j] = temp;
         }
     }
+    private void saveGame() {
+    try {
+        String fileName = "game_of_life_save.txt";
+        java.io.FileWriter writer = new java.io.FileWriter(fileName);
+        
+        // Save basic game state
+        writer.write("CURRENT_PLAYER_INDEX:" + currentPlayerIndex + "\n");
+        
+        // Save each player's data
+        for (int i = 0; i < players.length; i++) {
+            Player player = players[i];
+            writer.write("PLAYER:\n");
+            writer.write("NAME:" + player.getName() + "\n");
+            writer.write("POSITION:" + player.getPosition() + "\n");
+            writer.write("MONEY:" + player.getMoney() + "\n");
+            writer.write("CHILDREN:" + player.getChildren() + "\n");
+            writer.write("LOAN:" + player.getLoanAmount() + "\n");
+            writer.write("MARRIED:" + player.isMarried() + "\n");
+            writer.write("RETIRED:" + player.hasRetired() + "\n");
+            
+            if (player.getCareer() != null) {
+                writer.write("CAREER:" + player.getCareer().getName() + "\n");
+            }
+            
+            House[] houses = player.getHouses();
+            for (int j = 0; j < houses.length; j++) {
+                writer.write("HOUSE:" + houses[j].getName() + "\n");
+            }
+            
+            ActionCard[] cards = player.getActionCards();
+            for (int k = 0; k < cards.length; k++) {
+                writer.write("ACTION_CARD:" + cards[k].getTitle() + "\n");
+            }
+        }
+        
+        writer.close();
+        slowPrint("Game saved successfully to " + fileName);
+    } catch (Exception e) {
+        slowPrint("Error saving game: " + e.getMessage());
+    }
+    pressEnterToContinue();
 }
+private void loadGame() {
+    try {
+        String fileName = "game_of_life_save.txt";
+        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(fileName));
+        
+        String line;
+        Player currentPlayer = null;
+        List<Player> loadedPlayers = new ArrayList<Player>();
+        
+        while ((line = reader.readLine()) != null) {
+            if (line.equals("PLAYER:")) {
+                currentPlayer = new Player(""); // Initialize with empty name
+                loadedPlayers.add(currentPlayer);
+            } else if (currentPlayer != null) {
+                int colonIndex = line.indexOf(":");
+                if (colonIndex > 0) {
+                    String key = line.substring(0, colonIndex).trim();
+                    String value = line.substring(colonIndex + 1).trim();
+                    
+                    if (key.equals("NAME")) {
+                        currentPlayer.setName(value);
+                    } else if (key.equals("POSITION")) {
+                        currentPlayer.setPosition(Integer.parseInt(value));
+                    } else if (key.equals("MONEY")) {
+                        currentPlayer.setMoney(Integer.parseInt(value));
+                    } else if (key.equals("CHILDREN")) {
+                        currentPlayer.setChildren(Integer.parseInt(value));
+                    } else if (key.equals("LOAN")) {
+                        currentPlayer.setLoanAmount(Integer.parseInt(value));
+                    } else if (key.equals("MARRIED")) {
+                        currentPlayer.setMarried(Boolean.parseBoolean(value));
+                    } else if (key.equals("RETIRED")) {
+                        currentPlayer.setRetired(Boolean.parseBoolean(value));
+                    } else if (key.equals("CAREER")) {
+                        Career career = findCareerByName(value);
+                        if (career != null) {
+                            currentPlayer.setCareer(career);
+                        }
+                    } else if (key.equals("HOUSE")) {
+                        House house = findHouseByName(value);
+                        if (house != null) {
+                            currentPlayer.buyHouse(house);
+                        }
+                    } else if (key.equals("ACTION_CARD")) {
+                        ActionCard card = findActionCardByTitle(value);
+                        if (card != null) {
+                            currentPlayer.addActionCard(card);
+                        }
+                    } else if (key.equals("CURRENT_PLAYER_INDEX")) {
+                        currentPlayerIndex = Integer.parseInt(value);
+                    }
+                }
+            }
+        }
+        
+        reader.close();
+        
+        if (loadedPlayers.isEmpty() == false) {
+            players = loadedPlayers.toArray(new Player[0]);
+            slowPrint("Game loaded successfully with " + players.length + " players");
+        } else {
+            slowPrint("No player data found in save file");
+        }
+    } catch (Exception e) {
+        slowPrint("Error loading game: " + e.getMessage());
+        e.printStackTrace();
+    }
+    pressEnterToContinue();
+}
+private Career findCareerByName(String name) {
+    for (int i = 0; i < nonDegreeCareers.length; i++) {
+        Career career = nonDegreeCareers[i];
+        if (career.getName().equals(name)) {
+            return career;
+        }
+    }
+    for (int i = 0; i < degreeCareers.length; i++) {
+        Career career = degreeCareers[i];
+        if (career.getName().equals(name)) {
+            return career;
+        }
+    }
+    return null;
+}
+
+private House findHouseByName(String name) {
+    for (int i = 0; i < availableHouses.length; i++) {
+        House house = availableHouses[i];
+        if (house.getName().equals(name)) {
+            return house;
+        }
+    }
+    return null;
+}
+
+private ActionCard findActionCardByTitle(String title) {
+    for (int i = 0; i < actionCardDeck.length; i++) {
+        ActionCard card = actionCardDeck[i];
+        if (card.getTitle().equals(title)) {
+            return card;
+        }
+    }
+    ActionCard[] allCards = ActionCard.createActionCards();
+    for (int i = 0; i < allCards.length; i++) {
+        ActionCard card = allCards[i];
+        if (card.getTitle().equals(title)) {
+            return card;
+        }
+    }
+    return null;
+}
+}
+
