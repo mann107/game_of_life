@@ -294,7 +294,11 @@ private void playPlayerTurn(Player player) {
         slowPrint("Press ENTER to draw an action card...");
         scanner.nextLine();
         ActionCard card = actionCardDeck[0];
-        actionCardDeck = Arrays.copyOfRange(actionCardDeck, 1, actionCardDeck.length);
+        ActionCard[] newDeck = new ActionCard[actionCardDeck.length - 1];
+        for (int i = 1; i < actionCardDeck.length; i++) {
+            newDeck[i - 1] = actionCardDeck[i];
+        }
+        actionCardDeck = newDeck;
         slowPrint("You drew: " + card);
         if (card.isGroupSpin()) {
             handleGroupSpinCard(player);
@@ -414,7 +418,10 @@ private void playPlayerTurn(Player player) {
         clearScreen();
         slowPrint("=== GAME OVER ===");
         slowPrint("Final Results:");
-        Player[] sortedPlayers = Arrays.copyOf(players, players.length);
+        Player[] sortedPlayers = new Player[players.length];
+        for (int i = 0; i < players.length; i++) {
+            sortedPlayers[i] = players[i];
+        }
         for (int i = 0; i < sortedPlayers.length - 1; i++) {
             for (int j = 0; j < sortedPlayers.length - i - 1; j++) {
             int scoreA = sortedPlayers[j].getMoney() + sortedPlayers[j].getActionCards().length * 10000 + sortedPlayers[j].getChildren() * 10000;
