@@ -564,8 +564,8 @@ private void loadGame() {
             } else if (currentPlayer != null) {
                 int colonIndex = line.indexOf(":");
                 if (colonIndex > 0) {
-                    String key = line.substring(0, colonIndex).trim();
-                    String value = line.substring(colonIndex + 1).trim();
+                    String key = line.substring(0, colonIndex);
+                    String value = line.substring(colonIndex + 1);
                     
                     if (key.equals("NAME")) {
                         currentPlayer.setName(value);
