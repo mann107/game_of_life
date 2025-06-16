@@ -342,7 +342,8 @@ private void playPlayerTurn(Player player) {
     private void handleAllPlayersCard(Player player, ActionCard card) {
         int amount = Math.abs(card.getMoneyEffect());
         if (card.getMoneyEffect() > 0) {
-            for (Player other : players) {
+            for (int i = 0; i < players.length; i++) {
+                Player other = players[i];
                 if (other != player) {
                     if (other.subtractMoney(amount)) {
                         player.addMoney(amount);
@@ -356,7 +357,8 @@ private void playPlayerTurn(Player player) {
                 }
             }
         } else {
-            for (Player other : players) {
+            for (int i = 0; i < players.length; i++) {
+                Player other = players[i];
                 if (other != player) {
                     if (player.subtractMoney(amount)) {
                         other.addMoney(amount);
@@ -448,7 +450,9 @@ private void playPlayerTurn(Player player) {
         clearScreen();
         player.displayStats();
         slowPrint("\nAction Cards:");
-        for (ActionCard card : player.getActionCards()) {
+        ActionCard[] actionCards = player.getActionCards();
+        for (int i = 0; i < actionCards.length; i++) {
+            ActionCard card = actionCards[i];
             slowPrint("- " + card.getTitle());
         }
         pressEnterToContinue();
@@ -546,6 +550,8 @@ private void playPlayerTurn(Player player) {
     }
     pressEnterToContinue();
 }
+
+//some code was needed from stackoverflow to make this work since the files have a lot of data
 private void loadGame() {
     //according to stackoverflow we needed this try catch system to make this work since otherwise it was giving us an error
     try {
