@@ -184,7 +184,7 @@ private void playPlayerTurn(Player player) {
             Career career = getRandomCareer(nonDegreeCareers);
             player.setCareer(career);
             slowPrint("You got the career: " + career);
-            player.setPosition(5);
+            player.setPosition(0);
         } else {
             slowPrint("You chose College! You'll need to complete 20 spaces first.");
             slowPrint("You take out a $50,000 student loan.");
