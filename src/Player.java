@@ -81,14 +81,12 @@ public class Player {
     // Loan operations
     public void takeLoan(int amount) {
         this.loanAmount += amount;
-        this.money += amount;
     }
 
     public void payLoan(int amount) {
         int payment = Math.min(amount, loanAmount);
-        if (subtractMoney(payment)) {
-            loanAmount -= payment;
-        }
+        
+        loanAmount -= payment;
     }
 
     public void payOffAllLoans() {

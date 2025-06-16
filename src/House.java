@@ -1,7 +1,3 @@
-/**
- * Represents a house in the Game of Life
- * Contains house information including name, buy price, and sell prices for red/black
- */
 public class House {
     private String name;
     private int buyPrice;
@@ -15,20 +11,17 @@ public class House {
         this.sellPriceBlack = sellPriceBlack;
     }
     
-    // Getters
     public String getName() { return name; }
     public int getBuyPrice() { return buyPrice; }
     public int getSellPriceRed() { return sellPriceRed; }
     public int getSellPriceBlack() { return sellPriceBlack; }
-    
-    @Override
+
+
     public String toString() {
-        return name + " (Buy: $" + String.format("%,d", buyPrice) + 
-               ", Sell Red: $" + String.format("%,d", sellPriceRed) + 
-               ", Sell Black: $" + String.format("%,d", sellPriceBlack) + ")";
+        return name + " (Buy: $" + buyPrice +
+               ", Sell Red: $" + sellPriceRed +
+               ", Sell Black: $" + sellPriceBlack + ")";
     }
-    
-    // Static method to create available houses
     public static House[] createHouses() {
         return new House[] {
             new House("Starter Home", 80000, 60000, 40000),

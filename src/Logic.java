@@ -157,7 +157,7 @@ public class Logic {
     
     private void handleTileEffect(Player player) {
         // Handle college path completion
-        if (player.getPosition() == 0 && player.getCareer() == null) {
+        if (player.getPosition() >= 0 && player.getCareer() == null) {
             slowPrint("Congratulations! You graduated from college!");
             Career career = getRandomCareer(degreeCareers);
             player.setCareer(career);
