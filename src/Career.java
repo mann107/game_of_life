@@ -24,7 +24,7 @@ public class Career {
     public String getSpecialRule() { return specialRule; }
     
     public String toString() {
-        return name + " ($" + String.format("%,d", salary) + ")" + 
+        return name + " ($" + salary + ")" + 
                (requiresDegree ? " [Degree Required]" : "");
     }
     

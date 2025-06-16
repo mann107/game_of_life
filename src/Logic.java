@@ -511,10 +511,8 @@ private void playPlayerTurn(Player player) {
         String fileName = "game_of_life_save.txt";
         java.io.FileWriter writer = new java.io.FileWriter(fileName);
         
-        // Save basic game state
         writer.write("CURRENT_PLAYER_INDEX:" + currentPlayerIndex + "\n");
         
-        // Save each player's data
         for (int i = 0; i < players.length; i++) {
             Player player = players[i];
             writer.write("PLAYER:\n");
@@ -555,12 +553,13 @@ private void loadGame() {
         
         String line;
         Player currentPlayer = null;
-        List<Player> loadedPlayers = new ArrayList<Player>();
+        Player[] loadedPlayers = new Player[4];
+        int loadedPlayerCount = 0;
         
         while ((line = reader.readLine()) != null) {
             if (line.equals("PLAYER:")) {
                 currentPlayer = new Player(""); // Initialize with empty name
-                loadedPlayers.add(currentPlayer);
+                loadedPlayers[loadedPlayerCount++] = currentPlayer;
             } else if (currentPlayer != null) {
                 int colonIndex = line.indexOf(":");
                 if (colonIndex > 0) {
@@ -605,8 +604,11 @@ private void loadGame() {
         
         reader.close();
         
-        if (loadedPlayers.isEmpty() == false) {
-            players = loadedPlayers.toArray(new Player[0]);
+        if (loadedPlayerCount > 0) {
+            players = new Player[loadedPlayerCount];
+            for (int i = 0; i < loadedPlayerCount; i++) {
+                players[i] = loadedPlayers[i];
+            }
             slowPrint("Game loaded successfully with " + players.length + " players");
         } else {
             slowPrint("No player data found in save file");
