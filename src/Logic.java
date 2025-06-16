@@ -547,6 +547,7 @@ private void playPlayerTurn(Player player) {
     pressEnterToContinue();
 }
 private void loadGame() {
+    //according to stackoverflow we needed this try catch system to make this work since otherwise it was giving us an error
     try {
         String fileName = "game_of_life_save.txt";
         java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(fileName));

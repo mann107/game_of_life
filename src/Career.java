@@ -56,5 +56,7 @@ public class Career {
             new Career("Accountant", 45000, true),
             new Career("Computer Programmer", 62000, true, "Collect $2000 when someone spins 5")
         };
+
+        // The special rules for careers can be expanded or modified as needed. But we did not have time to implement them in the game logic.
     }
 }
