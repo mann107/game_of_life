@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class GameBoard {
     private Tile[] tiles;
     private static final int TOTAL_TILES = 200;
