@@ -19,9 +19,15 @@ public class Tile {
         this.position = position;
     }
 
-    public String getType() { return type; }
-    public String getDescription() { return description; }
-    public int getPosition() { return position; }
+    public String getType() { 
+        return type; 
+    }
+    public String getDescription() { 
+        return description; 
+    }
+    public int getPosition() { 
+        return position; 
+}
 
     public String toString() {
         return "Tile " + position + ": " + description;

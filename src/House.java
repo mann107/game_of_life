@@ -11,10 +11,18 @@ public class House {
         this.sellPriceBlack = sellPriceBlack;
     }
     
-    public String getName() { return name; }
-    public int getBuyPrice() { return buyPrice; }
-    public int getSellPriceRed() { return sellPriceRed; }
-    public int getSellPriceBlack() { return sellPriceBlack; }
+    public String getName() { 
+        return name; 
+    }
+    public int getBuyPrice() { 
+        return buyPrice; 
+    }
+    public int getSellPriceRed() { 
+        return sellPriceRed; 
+    }
+    public int getSellPriceBlack() { 
+        return sellPriceBlack; 
+}
 
 
     public String toString() {

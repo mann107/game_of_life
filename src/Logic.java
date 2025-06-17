@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 
 public class Logic {
@@ -27,41 +28,41 @@ public class Logic {
     }
     
     public void startGame() {
-    slowPrint("=================================");
-    slowPrint("   WELCOME TO THE GAME OF LIFE   ");
-    slowPrint("=================================");
+        slowPrint("=================================");
+        slowPrint("   WELCOME TO THE GAME OF LIFE   ");
+        slowPrint("=================================");
     
-    boolean shouldExit = false;
-    while (shouldExit == false) {
-        clearScreen();
-        slowPrint("Main Menu:");
-        slowPrint("1. New Game");
-        slowPrint("2. Load Game");
-        slowPrint("3. Exit");
-        slowPrint("Choose an option (1-3): ");
+        boolean shouldExit = false;
+        while (shouldExit == false) {
+            clearScreen();
+            slowPrint("Main Menu:");
+            slowPrint("1. New Game");
+            slowPrint("2. Load Game");
+            slowPrint("3. Exit");
+            slowPrint("Choose an option (1-3): ");
         
-        int choice = getIntInput(1, 3);
+            int choice = getIntInput(1, 3);
         
-        if (choice == 1) {
-            setupPlayers();
-            slowPrint("\nLet the game begin!");
-            pressEnterToContinue();
-            gameLoop();
-            endGame();
-            shouldExit = true;
-        } else if (choice == 2) {
-            loadGame();
-            if (players.length > 0) {
+            if (choice == 1) {
+                setupPlayers();
+                slowPrint("\nLet the game begin!");
+                pressEnterToContinue();
                 gameLoop();
                 endGame();
                 shouldExit = true;
+            } else if (choice == 2) {
+                loadGame();
+                if (players.length > 0) {
+                    gameLoop();
+                    endGame();
+                    shouldExit = true;
+                }
+            } else if (choice == 3) {
+                slowPrint("Thanks for playing! Goodbye!");
+                shouldExit = true;
             }
-        } else if (choice == 3) {
-            slowPrint("Thanks for playing! Goodbye!");
-            shouldExit = true;
         }
     }
-}
     
     private void setupPlayers() {
         slowPrint("\nHow many players will be playing? (2-4): ");

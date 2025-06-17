@@ -30,10 +30,19 @@ public class Player {
         this.hasRetired = false;
     }
 
-    public String getName() { return name; }
-    public int getPosition() { return position; }
-    public int getMoney() { return money; }
-    public Career getCareer() { return career; }
+    public String getName() { 
+        return name; 
+    }
+    public int getPosition() { 
+        return position; 
+    }
+    public int getMoney() { 
+        return money; 
+    }
+    public Career getCareer() { 
+        return career; 
+    }
+    
     public House[] getHouses() {
         House[] result = new House[houseCount];
         for (int i = 0; i < houseCount; i++) {
