@@ -88,7 +88,6 @@ public class Logic {
         Player currentPlayer = players[currentPlayerIndex];
         if (currentPlayer.hasRetired()) {
             nextPlayer();
-            continue;
         }
         clearScreen();
         playPlayerTurn(currentPlayer);
@@ -323,7 +322,8 @@ private void playPlayerTurn(Player player) {
         slowPrint("Group Spin! All players will spin, highest number wins!");
         int highestSpin = 0;
         Player winner = null;
-        for (Player p : players) {
+        for (int i = 0; i < players.length; i++) {
+            Player p = players[i];
             slowPrint(p.getName() + " spins...");
             pressEnterToContinue();
             int spin = wheel.spin();
